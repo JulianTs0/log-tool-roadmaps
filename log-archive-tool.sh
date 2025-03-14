@@ -34,12 +34,16 @@ then
   exit
 fi
 
+mkdir ./aux_dir
+
 for i in $logs
 do
-  echo $i
+  cp $1/$i ./aux_dir
 done
 
 actual_date=`date +%Y%m%d_%H%M%S`
+mkdir -p "$1/logs_dir" && tar -cvzf "$1/logs_dir/logs_archive_$actual_date.tar.gz" "./aux_dir"
+rm -r ./aux_dir
 
 
 
