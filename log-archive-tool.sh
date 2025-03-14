@@ -27,6 +27,7 @@ then
 fi
 
 logs=`ls $1 | grep  "\.log"`
+dirs=`ls -l /var/log | grep ^d | tr -s " " | cut -d " " -f9 | tr "\n" " "`
 
 if test `echo $logs | wc -w` -eq 0
 then
@@ -34,13 +35,23 @@ then
   exit
 fi
 
-mkdir ./aux_dir
+mkdir -p ./aux_dir
 
+for j in $dirs
+do
+  echo $j
+  dirs_log=`ls $1/$j | grep "\.log"`
+  for k in $dirs_log
+  do
+    cp $1/$j/$k ./aux_dir
+  done
+done
+  
 for i in $logs
 do
   cp $1/$i ./aux_dir
 done
-
+ 
 actual_date=`date +%Y%m%d_%H%M%S`
 mkdir -p "$1/logs_dir" && tar -cvzf "$1/logs_dir/logs_archive_$actual_date.tar.gz" "./aux_dir"
 rm -r ./aux_dir
